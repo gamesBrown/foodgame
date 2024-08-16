@@ -1,34 +1,56 @@
 extends Control
-var testing = true;
+#needed for if testing mode is on or not and tests will run
+var testing = false
+
+
 
 class combat:
-	var backgrounds = {1:"res://Art/novelai_anime_forest_4k_wallpaper_by_darkprncsai_dfgmsko-fullview.jpg",2:"res://Art/Hp_bar.png",3:null}
+	var backgrounds = {"forest_1":"res://Art/novelai_anime_forest_4k_wallpaper_by_darkprncsai_dfgmsko-fullview.jpg",2:"res://Art/Hp_bar.png",3:null}
+	var enemies = {"Samurai":"res://Art/Enemy_hurt.png"}
+	func generate_encounter():
+		pass
+	func load_enemies(node_ref):
+		
+		var enemy_list = [1,2,3]
+		for enemy in enemy_list:
+			print(enemy)
+			enemy = load("res://enemy.tscn").instantiate()
+			
+			print(enemy)
+			
+			print(enemy)
+			print(node_ref)
+			node_ref.add_child(enemy)
+		
+	func load_party():
+		pass
+			
+
 #Loads the background image using Resource Loader.
 func load_background(resource_path):
 
-	$Location/BackgroundImage.texture = ResourceLoader.load(resource_path)
+	$Location/BattleBackgroundImage.texture = ResourceLoader.load(resource_path)
 	
-func test_bg_null(test_bg):
-	print("Test background is " + test_bg)
-	print("The current resource loaded is: " + $Location/BackgroundImage.texture.resource_path)
-	if $Location/BackgroundImage.texture.resource_path == test_bg:
-		print("Test BG Successfully loaded.")
-	else:
-		print("Test BG Failed to load.")
-	return false
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	#creates a combat controller class
 	var combat_controller = combat.new()
 	#uses loadbackground function using an array from combat controller class
-	load_background(combat_controller.backgrounds[1])
-
-	print($Location/BackgroundImage.texture.resource_path)
-	#hard coded test for now, but can change in the future - runs a test to see if the resource loaded is equal to the test resource.
-	if testing:
-		test_bg_null("res://Art/novelai_anime_forest_4k_wallpaper_by_darkprncsai_dfgmsko-fullview.jpg")
 	
+	#when combat starts, load enemies, load party, start comabt
+	load_background(combat_controller.backgrounds["forest_1"])
+	combat_controller.load_enemies($EnemyDisplayContainer)
+	combat_controller.load_party()
+	
+	#runs tests if you have test mode activated
+	if testing:
+		var battle_test = $test.battle_tests.new()
+		var test_bg = "res://Art/novelai_anime_forest_4k_wallpaper_by_darkprncsai_dfgmsko-fullview.jpg"
+		var current_bg_path = $Location/BackgroundImage
+		#currently runs the verify test bg
+		battle_test.run_battle_tests(test_bg,current_bg_path)
 	
 	
 
